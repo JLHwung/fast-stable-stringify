@@ -1,11 +1,5 @@
 var objToString = Object.prototype.toString;
-var objKeys = Object.keys || function(obj) {
-		var keys = [];
-		for (var name in obj) {
-			keys.push(name);
-		}
-		return keys;
-	};
+var objKeys = Object.getOwnPropertyNames;
 
 function stringify(val, isArrayProp) {
 	var i, max, str, keys, key, propVal, toStr;
@@ -37,7 +31,7 @@ function stringify(val, isArrayProp) {
 					// only object is left
 					keys = objKeys(val).sort();
 					max = keys.length;
-					str = "";
+					str = '{';
 					i = 0;
 					while (i < max) {
 						key = keys[i];
@@ -46,11 +40,11 @@ function stringify(val, isArrayProp) {
 							if (str) {
 								str += ',';
 							}
-							str += JSON.stringify(key) + ':' + propVal;
+							str += "\"" + key + "\"" + ':' + propVal;
 						}
 						i++;
 					}
-					return '{' + str + '}';
+					return str + '}';
 				} else {
 					return JSON.stringify(val);
 				}
@@ -59,7 +53,7 @@ function stringify(val, isArrayProp) {
 		case "undefined":
 			return isArrayProp ? null : undefined;
 		case "string":
-			return JSON.stringify(val);
+			return val;
 		default:
 			return isFinite(val) ? val : null;
 	}
